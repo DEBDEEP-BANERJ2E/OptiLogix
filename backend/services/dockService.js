@@ -6,6 +6,12 @@ const findAvailableDock = async (type) => {
   return rows[0];
 };
 
+const getAllAvailableDocks = async () => {
+  const pool = getPool();
+  const [rows] = await pool.execute('SELECT * FROM docks WHERE status = ?', ['available']);
+  return rows;
+};
+
 
 
 const releaseDock = async (dockId) => {
@@ -39,7 +45,7 @@ const assignTruckToDock = async (truckId, dockId, appointmentId) => {
     await pool.execute('DELETE FROM truck_queue WHERE truckId = ?', [truckId]);
 
     // Schedule dock to be released after 10 seconds
-    setTimeout(() => releaseDock(dockId), 10000); // 10 seconds
+
 
     return true;
   } catch (error) {
@@ -50,6 +56,7 @@ const assignTruckToDock = async (truckId, dockId, appointmentId) => {
 
 module.exports = {
   findAvailableDock,
+  getAllAvailableDocks,
   assignTruckToDock,
   releaseDock
 };
