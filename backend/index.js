@@ -8,6 +8,7 @@ const cors = require('cors');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const dispatcherRoutes = require('./routes/dispatcherRoutes');
 const driverRoutes = require('./routes/driverRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 // Import services
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/dispatcher', dispatcherRoutes);
 app.use('/api/driver', driverRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api', appointmentRoutes); // For /api/trucks/arrive and /api/assignments/update-status
 
 

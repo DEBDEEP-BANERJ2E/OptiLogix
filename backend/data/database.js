@@ -72,6 +72,60 @@ async function initializeDatabase() {
     `);
     console.log('`docks` table checked/created successfully.');
 
+    // Create products table if it doesn't exist
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS products (
+        barcode VARCHAR(255) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        productIdentifier VARCHAR(255),
+        batchNumber VARCHAR(255),
+        serialNumber VARCHAR(255),
+        dateCodes VARCHAR(255),
+        productType VARCHAR(255),
+        locationCode VARCHAR(255),
+        stock INT NOT NULL,
+        location_x INT NOT NULL,
+        location_y INT NOT NULL
+      )
+    `);
+    console.log('`products` table checked/created successfully.');
+
+    // Clear existing product data and insert initial data
+    await pool.execute('DELETE FROM products');
+    console.log('Existing product data cleared.');
+
+    // Insert initial product data
+    // No longer checking if table is empty, as we just cleared it.
+      const initialProducts = [
+        { barcode: 'ABC-123', name: 'Widget A', stock: 50, location_x: 6, location_y: 2, description: 'A versatile widget for general use.', productIdentifier: 'WIDGET-A-001', batchNumber: 'WA-B-2023-01', serialNumber: 'WA-SN-0001', dateCodes: '2023-01-15', productType: 'Electronics', locationCode: 'A4S-B3' },
+        { barcode: 'DEF-456', name: 'Gadget B', stock: 30, location_x: 1, location_y: 5, description: 'A compact and portable gadget.', productIdentifier: 'GADGET-B-002', batchNumber: 'GB-B-2023-02', serialNumber: 'GB-SN-0002', dateCodes: '2023-02-20', productType: 'Tools', locationCode: 'B2R-C1' },
+        { barcode: 'GHI-789', name: 'Thing C', stock: 75, location_x: 4, location_y: 7, description: 'An essential item for daily tasks.', productIdentifier: 'THING-C-003', batchNumber: 'TC-B-2023-03', serialNumber: 'TC-SN-0003', dateCodes: '2023-03-10', productType: 'Household', locationCode: 'C1L-D5' },
+        { barcode: 'SKU12345', name: 'Example Product SKU', stock: 100, location_x: 3, location_y: 3, description: 'A sample product with SKU for testing.', productIdentifier: '8901234567890', batchNumber: 'BATCH2025A', serialNumber: 'SN2025070003', dateCodes: '2025-07-01', productType: 'ELC-TV-LG-42IN', locationCode: 'A4S-B3' },
+        { barcode: '8901234567890', name: 'Example Product GTIN', stock: 200, location_x: 5, location_y: 1, description: 'Another sample product with GTIN for testing.', productIdentifier: '8901234567890', batchNumber: 'BATCH2025B', serialNumber: 'SN2025070004', dateCodes: '2025-07-02', productType: 'FOD-SNK-CHIP-POT', locationCode: 'B2R-C1' },
+      ];
+
+      for (const product of initialProducts) {
+        await pool.execute(
+          'INSERT INTO products (barcode, name, description, productIdentifier, batchNumber, serialNumber, dateCodes, productType, locationCode, stock, location_x, location_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [
+            product.barcode,
+            product.name,
+            product.description,
+            product.productIdentifier,
+            product.batchNumber,
+            product.serialNumber,
+            product.dateCodes,
+            product.productType,
+            product.locationCode,
+            product.stock,
+            product.location_x,
+            product.location_y,
+          ]
+        );
+      }
+      console.log('Initial product data inserted.');
+
     // Insert initial dock data if table is empty
 
     const [rows] = await pool.execute('SELECT COUNT(*) as count FROM docks');

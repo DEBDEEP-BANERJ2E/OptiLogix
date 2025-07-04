@@ -6,7 +6,7 @@ const bookAppointment = async (truckId, supplier, requestedTime, type) => {
     truckId,
     supplier,
     dockId: null,
-    scheduledTime: new Date(requestedTime),
+    scheduledTime: new Date(requestedTime).toISOString().slice(0, 19).replace('T', ' '),
     status: 'booked',
     actualArrivalTime: null,
     loadingStartTime: null,
